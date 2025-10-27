@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Camera</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <a href="index.html" class="logo">FirstAid<span>+</span></a>
+        <a href="tel:911" class="btn-emergency">Call Emergency (911)</a>
+    </header>
+
+    <main class="container">
+        <div class="input-page">
+            <h2>Use Camera</h2>
+            
+            <div class="camera-controls">
+                <button id="btn-start-camera">Start Camera</button>
+                <p id="camera-status">Camera is off. Click "Start Camera" to get permission.</p>
+            </div>
+
+            <div class="video-capture-container">
+                <video id="camera-stream" autoplay playsinline></video>
+                <img id="snapshot-preview" alt="Photo snapshot">
+                <canvas id="camera-canvas"></canvas>
+            </div>
+            
+            <div class="camera-controls">
+                 <button id="btn-capture-photo">📷</button>
+            </div>
+
+            <a href="analysis.html" class="btn-submit" id="btn-submit-photo">Submit for Analysis</a>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Disclaimer: This tool is not a substitute for professional medical advice. 
+            Always call emergency services in a life-threatening situation.</p>
+    </footer>
+
+    <script>
+        const video = document.getElementById('camera-stream');
+        const canvas = document.getElementById('camera-canvas');
+        const snapshotPreview = document.getElementById('snapshot-preview');
+        const startButton = document.getElementById('btn-start-camera');
+        const captureButton = document.getElementById('btn-capture-photo');
+        const submitButton = document.getElementById('btn-submit-photo');
+        const cameraStatus = document.getElementById('camera-status');
+
+        let stream = null;
+
+        startButton.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                
+                video.srcObject = stream;
+                cameraStatus.textContent = 'Camera activated. Aim and take photo.';
+                startButton.style.display = 'none';
+                captureButton.style.display = 'inline-flex';
+                video.style.display = 'block';
+                snapshotPreview.style.display = 'none';
+                submitButton.classList.remove('visible');
+
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                if (err.name === 'NotAllowedError') {
+                    cameraStatus.textContent = 'Camera access was denied. Please allow camera access in your browser settings.';
+                } else {
+                    cameraStatus.textContent = 'Could not access camera. Is it being used by another app?';
+                }
+            }
+        });
+
+        captureButton.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const dataUrl = canvas.toDataURL('image/png');
+            snapshotPreview.src = dataUrl;
+            snapshotPreview.style.display = 'block';
+            
+            video.style.display = 'none';
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            cameraStatus.textContent = 'Photo captured. Click Submit to analyze.';
+            captureButton.style.display = 'none';
+            startButton.style.display = 'inline-block';
+            startButton.textContent = 'Retake Photo';
+            submitButton.classList.add('visible');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyzing...</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <a href="index.html" class="logo">FirstAid<span>+</span></a>
+        <a href="tel:911" class="btn-emergency">Call Emergency (911)</a>
+    </header>
+
+    <main class="container loader-container">
+        <h2>Analyzing your input...</h2>
+        <div class="loader"></div>
+        <p class="emergency-reminder">
+            If this is a life-threatening emergency, call 911 immediately.
+        </p>
+    </main>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = 'instructions.html';
+        }, 3000);
+    </script>
+
+</body>
+</html>

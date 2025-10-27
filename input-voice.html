@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speak Description</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <a href="index.html" class="logo">FirstAid<span>+</span></a>
+        <a href="tel:911" class="btn-emergency">Call Emergency (911)</a>
+    </header>
+
+    <main class="container">
+        <div class="input-page">
+            <h2>Speak Description</h2>
+            <div class="form-group voice-controls">
+                <label for="voice-btn">Tap the mic to start/stop recording:</label>
+                <button class="btn-voice" id="voice-btn">🎤</button>
+                <p id="voice-status">Tap to start speaking</p>
+                <textarea id="voice-result" readonly placeholder="Your transcribed text will appear here..."></textarea>
+            </div>
+            <a href="analysis.html" class="btn-submit">Submit for Analysis</a>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Disclaimer: This tool is not a substitute for professional medical advice. 
+            Always call emergency services in a life-threatening situation.</p>
+    </footer>
+
+    <script>
+        const voiceBtn = document.getElementById('voice-btn');
+        const voiceStatus = document.getElementById('voice-status');
+        const voiceResult = document.getElementById('voice-result');
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            let isListening = false;
+
+            voiceBtn.addEventListener('click', () => {
+                if (isListening) {
+                    recognition.stop();
+                    voiceStatus.textContent = 'Tap to start speaking';
+                    voiceBtn.classList.remove('is-listening');
+                    voiceBtn.innerHTML = '🎤';
+                    isListening = false;
+                } else {
+                    recognition.start();
+                    voiceStatus.textContent = 'Listening...';
+                    voiceBtn.classList.add('is-listening');
+                    voiceBtn.innerHTML = '■';
+                    isListening = true;
+                }
+            });
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                voiceResult.value = finalTranscript + interimTranscript;
+            };
+
+            recognition.onerror = (event) => {
+                voiceStatus.textContent = 'Error: ' + event.error;
+                isListening = false;
+                voiceBtn.classList.remove('is-listening');
+                voiceBtn.innerHTML = '🎤';
+            };
+
+            recognition.onend = () => {
+                if(isListening) {
+                    recognition.start();
+                }
+            };
+
+        } else {
+            voiceStatus.textContent = "Sorry, your browser doesn't support speech recognition.";
+            voiceBtn.disabled = true;
+        }
+    </script>
+
+</body>
+</html>

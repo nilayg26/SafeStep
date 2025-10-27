@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <a href="index.html" class="logo">FirstAid<span>+</span></a>
+        <a href="tel:911" class="btn-emergency">Call Emergency (911)</a>
+    </header>
+
+    <main class="container">
+        <div class="input-page">
+            <h2>Upload Image</h2>
+            <div class="form-group">
+                <label for="image-upload">Select an image from your gallery:</label>
+                <div class="file-input-wrapper">
+                    <button class="btn-upload">Choose File</button>
+                    <input type="file" id="image-upload" accept="image/*">
+                </div>
+                <div id="file-name">No file chosen.</div>
+                <div id="image-preview"></div>
+            </div>
+            <a href="analysis.html" class="btn-submit">Submit for Analysis</a>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Disclaimer: This tool is not a substitute for professional medical advice. 
+            Always call emergency services in a life-threatening situation.</p>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('image-upload');
+        const fileName = document.getElementById('file-name');
+        const imagePreview = document.getElementById('image-preview');
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileName.textContent = file.name;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image preview"/>`;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                fileName.textContent = 'No file chosen.';
+                imagePreview.innerHTML = '';
+            }
+        });
+    </script>
+
+</body>
+</html>
