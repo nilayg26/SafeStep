@@ -472,10 +472,13 @@ body {
     display: none;
 }
 
-#btn-submit-photo {
+/* --- THIS IS THE FIX --- */
+/* This new class hides the camera's submit button by default */
+.btn-submit-camera {
     display: none;
 }
 
-.btn-submit.visible {
+/* This rule is more specific and shows the button when JS adds the 'visible' class */
+.btn-submit-camera.visible {
     display: block;
 }

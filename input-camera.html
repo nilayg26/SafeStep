@@ -32,7 +32,7 @@
                  <button id="btn-capture-photo">📷</button>
             </div>
 
-            <a href="analysis.html" class="btn-submit" id="btn-submit-photo">Submit for Analysis</a>
+            <a href="analysis.html" class="btn-submit btn-submit-camera" id="btn-submit-photo">Submit for Analysis</a>
         </div>
     </main>
 
@@ -64,6 +64,8 @@
                 captureButton.style.display = 'inline-flex';
                 video.style.display = 'block';
                 snapshotPreview.style.display = 'none';
+                
+                // This line correctly uses the 'visible' class
                 submitButton.classList.remove('visible');
 
             } catch (err) {
@@ -95,6 +97,8 @@
             captureButton.style.display = 'none';
             startButton.style.display = 'inline-block';
             startButton.textContent = 'Retake Photo';
+            
+            // This line correctly uses the 'visible' class
             submitButton.classList.add('visible');
         });
     </script>
